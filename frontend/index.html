@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link shortener</title>
+  <style>
+    .error-message {
+      display: none;
+      color: red;
+    }
+    .shortened-link {
+      color: green;
+    }
+    .link-form {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Введите ссылку">
+    <button type="submit">Отправить</button>
+    <div class="error-message" id="errorMessage"></div>
+  </form>
+  <form class = "link-form" id="linkForm">
+    <div class="shortened-link" id="shortenedLink"></div>
+  </form>
+
+  <script>
+    const errorMessage = document.getElementById('errorMessage');
+    const linkForm = document.getElementById('linkForm');
+    const shortenedLink = document.getElementById('shortenedLink');
+    document.getElementById('searchForm').addEventListener('submit', async(event) => {
+      event.preventDefault()
+      const searchInputValue = document.getElementById('searchInput').value;
+      console.log(searchInputValue);
+      if (!isUrl(searchInputValue)) {
+        errorMessage.textContent = 'Надо ссылку и чтобы не с хоста localhost';
+        errorMessage.style.display = 'block';
+        linkForm.style.display = 'none';
+      } else {
+        errorMessage.style.display = 'none';
+        const res = await fetch('/shortId', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url: searchInputValue })
+        })
+        const { shortUrl } = await res.json()
+        if (shortUrl) {
+          shortenedLink.textContent = shortUrl;
+          linkForm.style.display = 'block';
+        }
+      }
+    });
+
+    function isUrl(str) {
+    try{
+        const isUrl = new URL(str);
+        if (isUrl.hostname === 'localhost') return false;
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+  </script>
+</body>
+</html>
