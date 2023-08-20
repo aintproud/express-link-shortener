@@ -5,11 +5,13 @@
     npm ci
     ```
 
-* [ ] Запустить redis в docker-compose, либо изменить ссылку в .env
+* [ ] Запустить redis с docker-compose, либо изменить ссылку в .env
+
   ```
   docker-compose up
   ```
 * [ ] Запустить сервер
+
   ```
   npm start
   ```
